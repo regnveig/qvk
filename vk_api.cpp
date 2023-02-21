@@ -6,6 +6,11 @@ VkApi::VkApi(QString* Token, QObject *parent): QNetworkAccessManager{parent} {
     this->TokenStorage = new VkTokenStorage(Token);
 }
 
+int VkApi::BindQmlEngine(QQmlApplicationEngine* Engine) {
+    Engine->rootContext()->setContextProperty("VkApi", this);
+    return 0;
+}
+
 int VkApi::MakeUrl(QString* Method, QMap<QString, QString>* Parameters, QUrl* Result) {
     QString Buffer = QString();
     Buffer.append("https://api.vk.com/method/");

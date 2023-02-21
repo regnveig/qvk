@@ -11,6 +11,8 @@
 #include <QNetworkAccessManager>
 #include <QMap>
 #include <QMapIterator>
+#include <QQmlApplicationEngine>
+#include <QQmlContext>
 #include <QObject>
 #include <QSsl>
 #include <QSslConfiguration>
@@ -25,6 +27,7 @@ class VkApi : public QNetworkAccessManager
     Q_OBJECT
 public:
     explicit VkApi(QString* Token, QObject *parent = nullptr);
+    int BindQmlEngine(QQmlApplicationEngine* Engine);
     int MakeUrl(QString* Method, QMap<QString, QString>* Parameters, QUrl* Result);
     int Request(QString* Method, QMap<QString, QString>* Parameters, QJsonDocument* Result);
     Q_INVOKABLE QString jsonRequest(QString Command);

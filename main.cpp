@@ -1,9 +1,14 @@
 #include "vk_api.h"
-#include <QCoreApplication>
+#include <QApplication>
+#include <QWebEngineView>
 
 int main(int argc, char *argv[])
 {
-    QCoreApplication a(argc, argv);
+    QApplication a(argc, argv);
+    QWebEngineView view;
+    view.setUrl("www.google.com");
+    view.resize(1024, 750);
+    view.show();
     QString* Token = new QString("<token>");
     VkApi API = VkApi(Token, nullptr);
     delete Token;
