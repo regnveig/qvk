@@ -11,7 +11,8 @@ class VkResponseHandler : public QObject
     Q_OBJECT
 public:
     explicit VkResponseHandler(QObject *parent = nullptr);
-    void GetData(QJsonDocument* Document);
+    QString EscapeJsonString(QString Value);
+    QJsonDocument GetData();
 public slots:
     void HandleReply(QNetworkReply* Reply);
 signals:

@@ -2,47 +2,42 @@
 
 VkResponseHandler::VkResponseHandler(QObject *parent) : QObject{parent} { }
 
-void VkResponseHandler::GetData(QJsonDocument* Document) {
-    *Document = this->Result;
+QJsonDocument VkResponseHandler::GetData() { return this->Result; }
+
+QString VkResponseHandler::EscapeJsonString(QString Value) {
+    return Value.replace(R"(\)", R"(\\)").replace(R"(")", R"(\")");
 }
 
 void VkResponseHandler::HandleReply(QNetworkReply* Reply) {
-    QByteArray* Bytes = new QByteArray();
+    QByteArray Bytes;
+    QString ErrorMessage = QString();
     if (Reply->error() == QNetworkReply::NoError) {
-        *Bytes = Reply->readAll();
-        int statusCode = Reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
-        if (statusCode != 200) {
-            QString* ErrorMessage = new QString();
-            ErrorMessage->append("{\"http_status_code\": ");
-            ErrorMessage->append(QString::number(statusCode));
-            ErrorMessage->append("}");
-            *Bytes = QByteArray(ErrorMessage->toUtf8());
-            delete ErrorMessage;
+        Bytes = Reply->readAll();
+        int StatusCode = Reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
+        if (StatusCode != 200) {
+            ErrorMessage.append(R"({"http_status_code": )");
+            ErrorMessage.append(QString::number(StatusCode));
+            ErrorMessage.append(R"(})");
+            Bytes = ErrorMessage.toUtf8();
         }
     } else {
-        QString* ErrorMessage = new QString();
-        ErrorMessage->append("{\"network_status_code\": ");
-        ErrorMessage->append(QString::number(Reply->error()));
-        ErrorMessage->append(", \"network_status_desc\": \"");
-        ErrorMessage->append(Reply->errorString().replace("\\", "\\\\").replace("\"", "\\\""));
-        ErrorMessage->append("\"}");
-        *Bytes = QByteArray(ErrorMessage->toUtf8());
-        delete ErrorMessage;
+        ErrorMessage.append(R"({"network_status_code":)");
+        ErrorMessage.append(QString::number(Reply->error()));
+        ErrorMessage.append(R"(,"network_status_desc":")");
+        ErrorMessage.append(this->EscapeJsonString(Reply->errorString()));
+        ErrorMessage.append(R"("})");
+        Bytes = ErrorMessage.toUtf8();
     }
     Reply->deleteLater();
-    QJsonDocument* Document = new QJsonDocument();
-    *Document = QJsonDocument::fromJson(*Bytes);
-    if (*Document == QJsonDocument()) {
-        QString* ErrorMessage = new QString();
-        ErrorMessage->append("{\"internal_error\": \"json_error\", \"api_response\": \"");
-        ErrorMessage->append(QString(*Bytes).replace("\\", "\\\\").replace("\"", "\\\""));
-        ErrorMessage->append("\"}");
-        *Bytes = QByteArray(ErrorMessage->toUtf8());
-        delete ErrorMessage;
-        *Document = QJsonDocument::fromJson(*Bytes);
+    QJsonDocument Document;
+    Document = QJsonDocument::fromJson(Bytes);
+    if (Document == QJsonDocument()) {
+        ErrorMessage.append(R"({"internal_error":"json_error","api_response":")");
+        ErrorMessage.append(this->EscapeJsonString(QString(Bytes)));
+        ErrorMessage.append(R"("})");
+        Bytes = ErrorMessage.toUtf8();
+        Document = QJsonDocument::fromJson(Bytes);
     }
-    delete Bytes;
-    this->Result = *Document;
+    this->Result = Document;
     emit this->Ready();
-    delete Document;
 }

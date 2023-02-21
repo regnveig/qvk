@@ -14,6 +14,11 @@ SOURCES += \
         vk_response_handler.cpp \
         vk_token_storage.cpp
 
+# CONFIG += qmltypes
+
+# QML_IMPORT_NAME = VkApi
+# QML_IMPORT_MAJOR_VERSION = 1
+
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
