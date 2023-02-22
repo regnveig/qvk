@@ -1,6 +1,7 @@
-#ifndef VKAPI_H
-#define VKAPI_H
+#ifndef QVK_H
+#define QVK_H
 
+#include "qvk_global.h"
 #include "vk_token_storage.h"
 
 #include <QByteArray>
@@ -24,7 +25,7 @@
 
 const int C_REQUEST_TIMEOUT = 20000;
 
-class VkApi : public QNetworkAccessManager
+class QVK_EXPORT VkApi : public QNetworkAccessManager
 {
     Q_OBJECT
 public:
@@ -49,4 +50,4 @@ private:
     VkTokenStorage* TokenStorage;
 };
 
-#endif // VKAPI_H
+#endif // QVK_H
