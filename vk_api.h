@@ -2,9 +2,9 @@
 #define VKAPI_H
 
 #include "vk_token_storage.h"
-#include "vk_response_handler.h"
 
 #include <QByteArray>
+#include <QDebug>
 #include <QEventLoop>
 #include <QJsonDocument>
 #include <QJsonObject>
@@ -19,6 +19,8 @@
 #include <QString>
 #include <QTimer>
 #include <QUrl>
+#include <QWebEngineView>
+#include <QtMath>
 
 const int C_REQUEST_TIMEOUT = 20000;
 
@@ -26,11 +28,22 @@ class VkApi : public QNetworkAccessManager
 {
     Q_OBJECT
 public:
-    explicit VkApi(QString* Token, QObject *parent = nullptr);
+    explicit VkApi(QObject *parent = nullptr);
     int BindQmlEngine(QQmlApplicationEngine* Engine);
+    Q_INVOKABLE int getWebToken();
+    int SetToken(QString* Token);
     int MakeUrl(QString* Method, QMap<QString, QString>* Parameters, QUrl* Result);
     int Request(QString* Method, QMap<QString, QString>* Parameters, QJsonDocument* Result);
     Q_INVOKABLE QString jsonRequest(QString Command);
+    // METHODS
+    // account
+    Q_INVOKABLE QString account_getBanned(int Offset, int Count);
+    Q_INVOKABLE QString account_getCounters();
+    Q_INVOKABLE QString account_getInfo();
+    Q_INVOKABLE QString account_getProfileInfo();
+    // status
+    Q_INVOKABLE QString status_get(int UserGroupID = 0);
+    Q_INVOKABLE QString status_set(QString Text, int GroupID = 0);
 private:
     QSslConfiguration ConfigSSL;
     VkTokenStorage* TokenStorage;

@@ -16,13 +16,13 @@ void VkResponseHandler::HandleReply(QNetworkReply* Reply) {
         int StatusCode = Reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
         if (StatusCode != 200) {
             ErrorMessage.append(R"({"http_status_code": )");
-            ErrorMessage.append(QString::number(StatusCode));
+            ErrorMessage.append(QString::number(StatusCode, 'f', 0));
             ErrorMessage.append(R"(})");
             Bytes = ErrorMessage.toUtf8();
         }
     } else {
         ErrorMessage.append(R"({"network_status_code":)");
-        ErrorMessage.append(QString::number(Reply->error()));
+        ErrorMessage.append(QString::number(Reply->error(), 'f', 0));
         ErrorMessage.append(R"(,"network_status_desc":")");
         ErrorMessage.append(this->EscapeJsonString(Reply->errorString()));
         ErrorMessage.append(R"("})");

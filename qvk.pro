@@ -9,6 +9,7 @@ CONFIG += c++17 console
 SOURCES += \
         main.cpp \
         vk_api.cpp \
+        vk_login_window.cpp \
         vk_response_handler.cpp \
         vk_token_storage.cpp
 
@@ -24,5 +25,6 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 HEADERS += \
     vk_api.h \
+    vk_login_window.h \
     vk_response_handler.h \
     vk_token_storage.h
