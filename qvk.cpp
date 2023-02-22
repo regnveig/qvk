@@ -22,7 +22,9 @@ int VkApi::getWebToken() {
     connect(this->TokenStorage, SIGNAL(TokenAccepted()), Loop, SLOT(quit()));
     connect(View, SIGNAL(LoginWindowClosed()), Loop, SLOT(quit()));
     View->setUrl(TokenUrl);
-    View->resize(800, 600);
+    View->setWindowTitle("VK Login Page");
+    View->setMinimumSize(800, 600);
+    View->setMaximumSize(800, 600);
     View->show();
     Loop->exec();
     delete View;
