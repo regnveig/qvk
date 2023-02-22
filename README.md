@@ -30,6 +30,6 @@ QML:
 
 ```qml
 VkApi.getWebToken()
-var response = status_set("I set this status with qvk!")
+var response = VkApi.status_set("I set this status with qvk!")
 console.log(response)
 ```
